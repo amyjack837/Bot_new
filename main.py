@@ -13,8 +13,6 @@ load_dotenv()
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 IG_USER = os.getenv("IG_USERNAME")
 IG_PASS = os.getenv("IG_PASSWORD")
-FB_USER = os.getenv("FB_USERNAME")
-FB_PASS = os.getenv("FB_PASSWORD")
 
 logging.basicConfig(level=logging.INFO)
 
@@ -74,8 +72,8 @@ def try_instaloader(url):
 def try_fdown(url):
     try:
         r = requests.get(f"https://fdown.net/download.php?URLz={url}", timeout=10)
-        matches = re.findall(r'https:\/\/video[^"]+\.mp4', r.text)
-        return [m.replace("\/", "/") for m in matches]
+        matches = re.findall(r'https:\\/\\/video[^"]+\\.mp4', r.text)
+        return [m.replace("\\/", "/") for m in matches]
     except Exception as e:
         logging.warning(f"[fdown FAIL] {e}")
     return []
@@ -108,8 +106,7 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if not media_urls:
             await update.message.reply_text(
-                f"❌ Could not fetch media from {platform.title()}.
-"
+                f"❌ Could not fetch media from {platform.title()}.\n"
                 f"🔗 Try manually: https://www.hitube.io/en?url={url}"
             )
             continue
@@ -122,8 +119,7 @@ async def handle(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     await update.message.reply_photo(media)
             except Exception as e:
                 logging.warning(f"[SEND FAIL] {e}")
-                await update.message.reply_text(f"⚠️ Failed to send media. Try downloading:
-{media}")
+                await update.message.reply_text(f"⚠️ Failed to send media. Try downloading:\n{media}")
 
 if __name__ == "__main__":
     keep_alive()
